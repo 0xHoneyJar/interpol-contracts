@@ -1,0 +1,46 @@
+---
+description: |
+  Base context and conventions for Set & Forgetti vaults on Berachain:
+  - One ERC-4626 vault per asset (HENLO, WBERA-ETH LP, BGT)
+  - Yearn V3 allocator pattern with multi-strategy allocation & on-chain migration
+  - Standardized IStrategy interface and Haiku adapter for off-chain calldata
+  - UUPS proxies, AccessControl roles, instant withdrawals, and testing guidelines
+globs:
+  - "contracts/**/*.sol"
+alwaysApply: true
+---
+
+## Project Context
+- One ERC-4626 vault contract per underlying asset, minting/burning share tokens for deposits and withdrawals. 
+- Vaults use Yearn V3’s allocator pattern, managing `current_debt` and `max_debt`, with `updateDebt()` for rebalancing or full migrations.
+- Strategies implement `IStrategy` (ERC-4626 or Yearn’s tokenized strategy) with `deposit()`, `withdraw()`, and `report()` hooks.
+- On-chain strategy migration: withdraw all from old (`updateDebt(old,0)`), allocate to new (`updateDebt(new,totalAssets)`), then remove old strategy. 
+
+## Naming & Structure
+- **File names** end with `Vault.sol`, `Strategy.sol`, or `.sol` in `interfaces/`. 
+- **Directory layout**:  
+  - `src/SFV1/vaults/`  
+  - `src/SFV1/strategies/`  
+  - `src/SFV1/adapters/` (e.g., HaikuAdapter)  
+  - `src/SFV1/interfaces/`  
+  - `script/`, `test/` subfolders.
+
+## Code Style & Patterns
+- **Inheritance order**: `UUPSUpgradeable`, `AccessControl`, `Pausable`, `ERC4626`, then `BaseVault` or `BaseStrategy`.
+- **NatSpec** for all public/external functions, events, and errors. 
+- Protect mutating functions with `nonReentrant` and `whenNotPaused`. 
+- Avoid unbounded loops—favor pull-over-push for user claims to prevent gas exhaustion. 
+- Use custom `error` types instead of string reverts for gas efficiency. 
+
+## Security & Testing
+- **Whitelist** external contracts (strategies, Haiku router) and validate calldata lengths. 
+- Wrap external calls in timeouts and revert on failure to avoid silent errors. 
+- Write comprehensive Forge tests for deposits, withdrawals, harvests, strategy migrations, slippage, and emergency scenarios. 
+
+## Best Practices for MDC Rules
+- Keep rules **focused**, **actionable**, and **under 500 lines**. 
+- Provide **concise examples** rather than lengthy tutorials. 
+- Use **Concise Markdown**; avoid unnecessary XML tags. 
+- Emojis are optional—only if they improve clarity. 
+- **Split** large rule sets into multiple, composable `.mdc` files as the project grows. 
+- **Reuse** common blocks instead of duplicating similar prompts. :contentReference

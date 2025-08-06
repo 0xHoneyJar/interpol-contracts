@@ -10,8 +10,8 @@ import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 import {SafeTransferLib as STL} from "solady/utils/SafeTransferLib.sol";
 import {FixedPointMathLib as FPML} from "solady/utils/FixedPointMathLib.sol";
 
-import {HoneyLocker} from "../../HoneyLocker.sol";
-import {IBGTStationGauge} from "../../adapters/BGTStationAdapter.sol";
+import {HoneyLocker} from "../HoneyLocker.sol";
+import {IBGTStationGauge} from "../adapters/BGTStationAdapter.sol";
 
 contract BoycoInterpolVault is ERC20Upgradeable, UUPSUpgradeable, OwnableUpgradeable {
     using Math for uint256;
