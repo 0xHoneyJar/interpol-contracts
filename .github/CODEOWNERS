@@ -1,0 +1,4 @@
+# interpol-contracts CODEOWNERS
+# Auto-requests reviews from DRIs per ADR-027
+
+* @ZERGUCCI @janitooor
